@@ -1,0 +1,2 @@
+ArrayStack.o: ArrayStack.h DataType.h
+NodeStack.o: NodeStack.h DataType.h
