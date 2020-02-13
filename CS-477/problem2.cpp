@@ -19,7 +19,11 @@ int main (int argc, char* argv[])
 {
 	int A[] = {1, 4, 9, 3, 4, 9, 5, 6, 9, 3 ,7};
 
+	cout << "Before merge sort: ";
+	printArray(A);
+	cout << endl;
 	mergeSort(A, 0, SIZE);
+	cout << "After merge sort: ";
 	printArray(A);
 }
 
