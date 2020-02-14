@@ -4,8 +4,10 @@
 	by Curtis Chung
 	Date: 2/6/2020
 */
-#include "database.h"
+#include <iostream>
+#include "table.h"
 
-void Database::createDatabase(string dbName) {
-
+Table::Table(string name) 
+{
+	tableName = name;
 }
