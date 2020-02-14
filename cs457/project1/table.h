@@ -4,23 +4,23 @@
 	by Curtis Chung
 	Date: 2/6/2020
 */
-#ifndef DATABASE_H
-#define DATABASE_H
+#ifndef TABLE_H
+#define TABLE_H
 
 #include <iostream>
 #include <string>
 
 using namespace std;
 
-class Database {
+class Table {
 public:
-	Database();
-	Database(string name);
+	Table(string name);
+	~Table();
 
-	void createDatabase(string line);
+	string getName();
 
 private:
-
+	string tableName;
 
 };
 
