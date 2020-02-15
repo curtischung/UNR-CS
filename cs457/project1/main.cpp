@@ -4,7 +4,7 @@
 	by Curtis Chung
 	Date: 2/6/2020
 */
-#define _GLIBCXX_USE_CXX11_ABI 0
+
 
 #include <iostream>
 #include <string>
@@ -14,31 +14,56 @@
 
 using namespace std;
 
-string convertUppercase (string &str);
+string convertUppercase (string &str); //broken
+
+/*
+THINGS TO DO:
+	convertUppercase broken, doesnt return the capitalized string, but does
+	the process correctly
+
+	CREATE DATABASE is the only one read atm
+*/
 
 int main (int argc, char * argv[]) 
 {
 	string command;
 	string dbName = "default";
 	string tName = "default";
+	int systemTracker;
+
+//	convertUppercase(dbName); //testing statements
+//	cout << dbName;
 
 	while (command != ".EXIT") {
 		cout << "> ";
-		cin >> command;
-		command = convertUppercase(command);
+		getline(cin, command);
+		convertUppercase(command); //broken
 
-		if (command.find("CREATE DATABASE") != -1) 
+		if (command.find("CREATE DATABASE") != 1) 
 		{
+
 			if (command.substr (16, command.length() - 16) != dbName)
 			{
 				dbName = command.substr (16, command.length() - 16);
-				system(("mkdir" + dbName).c_str());
-			}
-			else
+				systemTracker = system(("mkdir " + dbName).c_str());
+				cout << "help";
+				if(systemTracker == 0)
+				{
+					cout << "database created"	<< endl;
+				}
+			} 
+			else if (command.substr (16, command.length() - 16) == dbName)
 			{
-				cout << "Failed to create database" << dbName <<  "because it already exists.";
+				cout << "Failed to create database '" <<
+				 dbName << "' because it already exists." << endl;
 			}
 
+		}
+		else if (command.find("DROP DATABASE") != 1)
+		{
+			dbName = command.substr (14, command.length() - 14);
+			systemTracker = system(("rmdir " + dbName).c_str());
+			cout << "Database '" << dbName << "' was successfully deleted." << endl;
 		}
 		
 	}
@@ -53,5 +78,5 @@ string convertUppercase (string &str)
 	{
 		c += toupper(str[i]);
 	}
-	return c;
+	return string(c);
 }
