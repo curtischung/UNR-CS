@@ -7,56 +7,46 @@
 
 #include <iostream>
 
-#define SIZE 11
-
 using namespace std;
 
 
-int MaxArrayIndex (int arr[], int left, int right) {
-	int mid;
-	int maxLeft = 0;
-	int maxRight = 0;
-
-	if (arr[left] >= arr[right])
+int MaxArrayElement (int arr[], int left, int right) 
+{
+	if(right - left == 1)
 	{
-		return left;
+		return arr[left];
 	}
-	else
-	{
-		mid = left + (right - left) / 2;
-		cout << maxLeft << " ";
-		maxLeft = MaxArrayIndex(arr, left, mid);
-		cout << endl;
-		cout << maxRight << " ";
-		maxRight = MaxArrayIndex(arr, mid + 1, right);
 
-		if (arr[maxLeft] >= arr[maxRight])
-		{
-			return maxLeft;
-		}
-		else
-		{
-			return maxRight;
-		}
+	int mid = (left + right) / 2;
 
-	}
+	int u = MaxArrayElement(arr, left, mid);
+
+	int v = MaxArrayElement(arr, mid, right);
+
+
+	return u>v?u:v;
 }
-void printArray(int arr[]);
+
+int MaxArrayIndex(int arr[], int max, int n)
+{
+	cout << "The max element appears at indexes: ";
+	for(int i = 0; i < n; i++)
+	{
+		if(arr[i] == max)
+		{
+			cout << i << " ";
+		}
+	}
+	cout << endl;
+}
 
 int main (int argc, char* argv[]) 
 {
 	int A[] = {1, 4, 9, 3, 4, 9, 5, 6, 9, 3 ,7};
+	int size = sizeof(A)/sizeof(int);
 	int result;
 
 
-	result = MaxArrayIndex(A, 0, SIZE);
-	cout << "Largest number position: " << result << endl;
-}
-
-
-void printArray(int arr[]) {
-	for(int i = 0; i < SIZE; i++) {
-		cout << arr[i] << " ";
-	}
-	cout << endl;
+	result = MaxArrayElement(A, 0, size - 1);
+	MaxArrayIndex(A, result, size);
 }
