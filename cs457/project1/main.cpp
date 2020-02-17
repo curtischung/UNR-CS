@@ -11,6 +11,7 @@
 #include <ctype.h>
 #include <bits/stdc++.h>
 #include <algorithm>
+#include <vector>
 #include "table.cpp"
 
 using namespace std;
@@ -18,10 +19,6 @@ using namespace std;
 string convertUppercase (string &str); //broken
 
 /*
-THINGS TO DO:
-	convertUppercase broken, doesnt return the capitalized string, but does
-	the process correctly
-
 	CREATE DATABASE is the only one read atm
 */
 
@@ -32,8 +29,6 @@ int main (int argc, char * argv[])
 	string tName = "";
 	int systemTracker;
 
-//	convertUppercase(dbName); //testing statements
-//	cout << dbName;
 
 	while (command != ".EXIT;") {
 		cout << "> ";
@@ -41,7 +36,6 @@ int main (int argc, char * argv[])
 		//convertUppercase(command); //broken
 
 		transform(command.begin(), command.end(), command.begin(), ::toupper);
-		cout << command;
 		if(command.find(';') == -1)
 		{
 			cout << "Command not recognized, please insert a ';' after each command." << endl;
