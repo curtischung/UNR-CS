@@ -16,7 +16,6 @@
 
 using namespace std;
 
-string convertUppercase (string &str); //broken
 
 /*
 	CREATE DATABASE is the only one read atm
@@ -33,9 +32,9 @@ int main (int argc, char * argv[])
 	while (command != ".EXIT;") {
 		cout << "> ";
 		getline(cin, command);
-		//convertUppercase(command); //broken
 
-		transform(command.begin(), command.end(), command.begin(), ::toupper);
+		transform(command.begin(), command.end(), command.begin(), ::toupper); //converts all commands to uppercase
+		
 		if(command.find(';') == -1)
 		{
 			cout << "Command not recognized, please insert a ';' after each command." << endl;
@@ -72,14 +71,4 @@ int main (int argc, char * argv[])
 	}
 
 	return 0;
-}
-
-string convertUppercase (string &str)
-{
-	string c;
-	for(int i = 0; i < str.size(); i++)
-	{
-		c += toupper(str[i]);
-	}
-	return c;
 }
