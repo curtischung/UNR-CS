@@ -9,8 +9,9 @@
 #include <iostream>
 #include <string>
 #include <ctype.h>
-#include <bits/stdc++.h>
+#include <bits/stdc++.h> //transform()
 #include <algorithm>
+#include <sys/stat.h> //stat
 #include <vector>
 #include "table.cpp"
 
@@ -26,47 +27,69 @@ int main (int argc, char * argv[])
 	string command;
 	string dbName = "";
 	string tName = "";
+
+	string delFile = "";
+	struct stat buf;
+
+	vector<Table> tableObject;
 	int systemTracker;
 
 
-	while (command != ".EXIT;") {
+	while (command != ".EXIT") {
 		cout << "> ";
 		getline(cin, command);
 
 		transform(command.begin(), command.end(), command.begin(), ::toupper); //converts all commands to uppercase
 		
-		if(command.find(';') == -1)
+		//ensures commands end with a ';' or start with '.'
+		if(command.find(';') == -1 && command.find('.') != 0)
 		{
 			cout << "Command not recognized, please insert a ';' after each command." << endl;
 		}
-		else if (command.find("CREATE DATABASE") != 1) 
+		else if (command == ".EXIT") //ensures exit command (probably unnneccesary)
 		{
+			break;
+		}
 
-			if (command.substr (16, command.length() - 16) != dbName)
+		//creates file directory database
+		else if (command.find("CREATE DATABASE") != string::npos) 
+		{
+			dbName = command.substr (16, command.length() - 17); //sets dbName as name given by user after command input
+			if (stat(dbName.c_str(), &buf) != 0) //checks if file exists
 			{
-				dbName = command.substr (16, command.length() - 16);
 				systemTracker = system(("mkdir " + dbName).c_str());
-				if(systemTracker == 0)
-				{
-					cout << "Database '" << dbName << "' was successfully created. "<< endl;
-				}
+				cout << "Database '" << dbName << "' was successfully created. "<< endl;
 			} 
-			else if (command.substr (16, command.length() - 16) == dbName)
+			else 
 			{
 				cout << "Failed to create database '" <<
 				 dbName << "' because it already exists." << endl;
 			}
 
 		}
-		else if (command.find("DROP DATABASE") != 1)
+
+		//deletes file directory database
+		else if (command.find("DROP DATABASE") != string::npos)
 		{
-			dbName = command.substr (14, command.length() - 14);
-			systemTracker = system(("rmdir " + dbName).c_str());
-			cout << "Database '" << dbName << "' was successfully deleted." << endl;
+			delFile = command.substr (14, command.length() - 15); //sets delFile to name
+			if (stat(delFile.c_str(), &buf) == 0) //checks if file exists
+			{
+				systemTracker = system(("rmdir " + delFile).c_str());
+				cout << "Database '" << delFile << "' was successfully deleted." << endl;
+			}
+			else
+			{
+				cout << "Failed to delete '" <<
+				 delFile << "' because it does not exist." << endl;
+			}
+		}
+		else if (command.find("CREATE TABLE") != string::npos)
+		{
+			tName = command.substr(13, command.length() - 14);
 		}
 		else
 		{
-			cout << "Error: Command not recognized.";
+			cout << "Error: Command not recognized." << endl;
 		}
 	}
 
