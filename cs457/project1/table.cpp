@@ -11,3 +11,13 @@ Table::Table(string name)
 {
 	tableName = name;
 }
+
+Table::~Table()
+{
+	tableName = "";
+}
+
+string Table::getName()
+{
+	return tableName;
+}
