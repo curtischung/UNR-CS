@@ -21,3 +21,13 @@ string Table::getName()
 {
 	return tableName;
 }
+
+string Table::getParameters()
+{
+	return tableParameters;
+}
+
+void Table::setParameters(string p)
+{
+	tableParameters = p;
+}
