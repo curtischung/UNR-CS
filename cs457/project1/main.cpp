@@ -18,10 +18,6 @@
 using namespace std;
 
 
-/*
-	CREATE DATABASE is the only one read atm
-*/
-
 int main (int argc, char * argv[]) 
 {
 	string command;
@@ -44,7 +40,7 @@ int main (int argc, char * argv[])
 		cout << "> ";
 		getline(cin, command);
 
-		transform(command.begin(), command.end(), command.begin(), ::toupper); //converts all commands to uppercase
+		//transform(command.begin(), command.end(), command.begin(), ::toupper); //converts all commands to uppercase
 		
 		//ensures commands end with a ';' or start with '.'
 		if(command.find(';') == -1 && command.find('.') != 0)
@@ -165,7 +161,7 @@ int main (int argc, char * argv[])
 					if(tName == tableObject[i].getName() && db == tableObject[i].getDatabase())
 					{
 						tableObject[i].setParameters(tableObject[i].getParameters() + "," + add);
-						cout << "Table modified" << endl;
+						cout << "Table '" << tName << "' has been modified." << endl;
 						break;
 					}
 				}
@@ -186,7 +182,6 @@ int main (int argc, char * argv[])
 					if(tName == tableObject[i].getName() && db == tableObject[i].getDatabase())
 					{
 						tableObject[i].printTable();
-						cout << "printed" << endl;
 						break;
 					}
 				}
