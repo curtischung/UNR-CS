@@ -119,7 +119,7 @@ int main (int argc, char * argv[])
 				if(db != "")
 				{
 					systemTracker = system(("touch " + db + "/" + tName + ".txt").c_str()); //creates .txt table
-					para = command.substr(command.find("(") + 1, command.length() - 3 - command.find(")")); //sets parameters from command inputted
+					para = command.substr(command.find("(") + 1, command.length() - 3 - command.find("(")); //sets parameters from command inputted
 					Table* T = new Table(tName, para, db); //Creates table instance
 					tableObject.push_back(*T);
 					cout << "Table '" << tName << "' was successfully created." << endl;
@@ -155,7 +155,7 @@ int main (int argc, char * argv[])
 		else if (command.find("ALTER TABLE") != string::npos)
 		{
 			tName = command.substr(12, command.find("ADD")-13);
-			string add = command.substr(command.find("ADD") + 4, command.length() - (command.find("ADD") + 5));
+			string add = command.substr(command.find("ADD") + 3, command.length() - (command.find("ADD") + 4));
 			
 			string file = db + "/" + tName + ".txt";
 			if(stat(file.c_str(), &buf) == 0)
@@ -174,7 +174,27 @@ int main (int argc, char * argv[])
 			{
 				cout << "Failed to modify '" << tName << "' because it does not exist." << endl;
 			}
-
+		}	
+		else if (command.find("SELECT *") != string::npos)
+		{
+			tName = command.substr(14, command.length() - 15);
+			string file = db + "/" + tName + ".txt";
+			if(stat(file.c_str(), &buf) == 0)
+			{
+				for(int i = 0; i < tableObject.size(); i++)
+				{
+					if(tName == tableObject[i].getName() && db == tableObject[i].getDatabase())
+					{
+						tableObject[i].printTable();
+						cout << "printed" << endl;
+						break;
+					}
+				}
+			}
+			else
+			{
+				cout << "Failed to select table '" << tName << "' because it does not exist." << endl;
+			}
 		}
 		else
 		{
