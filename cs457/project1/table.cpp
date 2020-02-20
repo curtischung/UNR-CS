@@ -38,3 +38,15 @@ void Table::setParameters(string p)
 {
 	tableParameters = p;
 }
+
+void Table::printTable()
+{
+	string l = tableParameters;
+	int pos = l.find(',');
+	while (pos > 0)
+	{
+		l.replace(pos, 2, " | ");
+		pos = l.find(',');
+	}
+	cout << l << endl;
+}
