@@ -14,7 +14,7 @@ using namespace std;
 
 class Table {
 public:
-	Table(string name, string parameters);
+	Table(string name, string parameters, string db);
 	~Table();
 
 	string getName();
@@ -25,7 +25,7 @@ public:
 private:
 	string tableName;
 	string tableParameters;
-	string db;
+	string database;
 
 };
 
