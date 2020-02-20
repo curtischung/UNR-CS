@@ -22,6 +22,8 @@ public:
 	string getDatabase();
 
 	void setParameters(string p);
+
+	void printTable();
 private:
 	string tableName;
 	string tableParameters;
