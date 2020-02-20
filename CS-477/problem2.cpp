@@ -6,39 +6,50 @@
 */
 
 #include <iostream>
+#include <vector>
 
 using namespace std;
 
 
 int MaxArrayElement (int arr[], int left, int right) 
 {
-	if(right - left == 1)
-	{
-		return arr[left];
-	}
 
+	int i, j;
 	int mid = (left + right) / 2;
+	int maxIndexL;
+	int maxIndexR;
 
-	int u = MaxArrayElement(arr, left, mid);
-
-	int v = MaxArrayElement(arr, mid, right);
-
-
-	return u>v?u:v;
-}
-
-int MaxArrayIndex(int arr[], int max, int n)
-{
-	cout << "The max element appears at indexes: ";
-	for(int i = 0; i < n; i++)
+	if (right - left == 0)
 	{
-		if(arr[i] == max)
+		return left;
+	}
+	else if (right - left == 1)
+	{
+		if(arr[left] > arr[right])
 		{
-			cout << i << " ";
+			return left;
+		}
+		else
+		{
+			return right;
 		}
 	}
-	cout << endl;
+	else
+	{
+		maxIndexL = MaxArrayElement(arr, left, mid);
+		maxIndexR = MaxArrayElement(arr, mid, right);
+		if(arr[maxIndexL] > arr[maxIndexR])
+		{
+			return maxIndexL;
+		}
+		else
+		{
+			return maxIndexR;
+		}
+	}
+
 }
+
 
 int main (int argc, char* argv[]) 
 {
@@ -48,5 +59,5 @@ int main (int argc, char* argv[])
 
 
 	result = MaxArrayElement(A, 0, size - 1);
-	MaxArrayIndex(A, result, size);
+	cout << "Largest number index: " << result << endl;
 }
