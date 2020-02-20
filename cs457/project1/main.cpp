@@ -27,12 +27,17 @@ int main (int argc, char * argv[])
 	string command;
 	string dbName = "";
 	string tName = "";
-
 	string delFile = "";
+	string delTable = "";
+
+	string db = "";
+	string para = "";
+
 	struct stat buf;
 
 	vector<Table> tableObject;
 	int systemTracker;
+	int errorFlag = 0;
 
 
 	while (command != ".EXIT") {
@@ -83,9 +88,93 @@ int main (int argc, char * argv[])
 				 delFile << "' because it does not exist." << endl;
 			}
 		}
+
+		//selects which database folder to use
+		else if (command.find("USE") != -1)
+		{
+			db = command.substr(4, command.length() - 5);
+			if (stat(db.c_str(), &buf) == 0)
+			{
+				systemTracker = system(("cd " + db).c_str());
+				cout << "Using database '" << db << "'." << endl;
+			}
+			else
+			{
+				cout << "Failed to select database '" << db << "' because it does not exist." << endl;
+			}
+		}
+
+		//creates a table.txt file, which stores said .txt in the database folder
 		else if (command.find("CREATE TABLE") != string::npos)
 		{
-			tName = command.substr(13, command.length() - 14);
+			tName = command.substr(13, command.find("(") - 14);
+			string file = db + "/" + tName + ".txt";
+
+			if(stat(file.c_str(), &buf) == 0)
+			{
+				cout << "Failed to create table '" << tName << "' because it already exists." << endl;	
+			}
+			else
+			{
+				if(db != "")
+				{
+					systemTracker = system(("touch " + db + "/" + tName + ".txt").c_str()); //creates .txt table
+					para = command.substr(command.find("(") + 1, command.length() - 3 - command.find(")")); //sets parameters from command inputted
+					Table* T = new Table(tName, para, db); //Creates table instance
+					tableObject.push_back(*T);
+					cout << "Table '" << tName << "' was successfully created." << endl;
+				}
+				else
+				{
+					cout << "Error: No database selected." << endl;
+				}
+			}
+		}
+		else if (command.find("DROP TABLE") != string::npos)
+		{
+			delTable = command.substr(11, command.length() - 12);
+
+			string file = db + "/" + delTable + ".txt";
+			if(stat(file.c_str(), &buf) == 0)
+			{
+				systemTracker = system(("rm " + db + "/" + delTable + ".txt").c_str());
+				for(int i = 0; i < tableObject.size(); i++)
+				{
+					if(delTable == tableObject[i].getName() && db == tableObject[i].getDatabase())
+					{
+						tableObject.erase(tableObject.begin() + i);
+					}
+					cout << "Table '" << delTable <<"' successfully deleted." << endl;
+				}
+			}
+			else
+			{
+				cout << "Failed to delete table '" << delTable << "' because it does not exist." << endl;
+			}
+		}
+		else if (command.find("ALTER TABLE") != string::npos)
+		{
+			tName = command.substr(12, command.find("ADD")-13);
+			string add = command.substr(command.find("ADD") + 4, command.length() - (command.find("ADD") + 5));
+			
+			string file = db + "/" + tName + ".txt";
+			if(stat(file.c_str(), &buf) == 0)
+			{
+				for(int i = 0; i < tableObject.size(); i++)
+				{
+					if(tName == tableObject[i].getName() && db == tableObject[i].getDatabase())
+					{
+						tableObject[i].setParameters(tableObject[i].getParameters() + "," + add);
+						cout << "Table modified" << endl;
+						break;
+					}
+				}
+			}
+			else
+			{
+				cout << "Failed to modify '" << tName << "' because it does not exist." << endl;
+			}
+
 		}
 		else
 		{
