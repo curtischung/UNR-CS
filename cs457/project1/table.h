@@ -14,13 +14,18 @@ using namespace std;
 
 class Table {
 public:
-	Table(string name);
+	Table(string name, string parameters);
 	~Table();
 
 	string getName();
+	string getParameters();
+	string getDatabase();
 
+	void setParameters(string p);
 private:
 	string tableName;
+	string tableParameters;
+	string db;
 
 };
 
