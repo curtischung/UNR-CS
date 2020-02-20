@@ -7,10 +7,11 @@
 #include <iostream>
 #include "table.h"
 
-Table::Table(string name, string parameters) 
+Table::Table(string name, string parameters, string db) 
 {
 	tableName = name;
 	tableParameters = parameters;
+	database = db;
 }
 
 Table::~Table()
@@ -30,8 +31,9 @@ string Table::getParameters()
 
 string Table::getDatabase()
 {
-	return db;
+	return database;
 }
+
 void Table::setParameters(string p)
 {
 	tableParameters = p;
