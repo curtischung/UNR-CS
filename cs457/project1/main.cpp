@@ -126,11 +126,13 @@ int main (int argc, char * argv[])
 				}
 			}
 		}
+
+		//Deletes table from selected database
 		else if (command.find("DROP TABLE") != string::npos)
 		{
 			delTable = command.substr(11, command.length() - 12);
 
-			string file = db + "/" + delTable + ".txt";
+			string file = db + "/" + delTable + ".txt"; //ensures we check in the database folder
 			if(stat(file.c_str(), &buf) == 0)
 			{
 				systemTracker = system(("rm " + db + "/" + delTable + ".txt").c_str());
@@ -138,7 +140,7 @@ int main (int argc, char * argv[])
 				{
 					if(delTable == tableObject[i].getName() && db == tableObject[i].getDatabase())
 					{
-						tableObject.erase(tableObject.begin() + i);
+						tableObject.erase(tableObject.begin() + i); //erases table parameters within the vector class
 					}
 					cout << "Table '" << delTable <<"' successfully deleted." << endl;
 				}
@@ -148,19 +150,21 @@ int main (int argc, char * argv[])
 				cout << "Failed to delete table '" << delTable << "' because it does not exist." << endl;
 			}
 		}
+		
+		//Alter table contents, add parameters to the table vecor that has already been created
 		else if (command.find("ALTER TABLE") != string::npos)
 		{
 			tName = command.substr(12, command.find("ADD")-13);
 			string add = command.substr(command.find("ADD") + 3, command.length() - (command.find("ADD") + 4));
 			
-			string file = db + "/" + tName + ".txt";
+			string file = db + "/" + tName + ".txt"; //ensures we check inside selected database
 			if(stat(file.c_str(), &buf) == 0)
 			{
 				for(int i = 0; i < tableObject.size(); i++)
 				{
 					if(tName == tableObject[i].getName() && db == tableObject[i].getDatabase())
 					{
-						tableObject[i].setParameters(tableObject[i].getParameters() + "," + add);
+						tableObject[i].setParameters(tableObject[i].getParameters() + "," + add); //sets new parameters to already existing parameters
 						cout << "Table '" << tName << "' has been modified." << endl;
 						break;
 					}
@@ -171,10 +175,12 @@ int main (int argc, char * argv[])
 				cout << "Failed to modify '" << tName << "' because it does not exist." << endl;
 			}
 		}	
+
+		//Select allows us to select the table and prints it
 		else if (command.find("SELECT *") != string::npos)
 		{
 			tName = command.substr(14, command.length() - 15);
-			string file = db + "/" + tName + ".txt";
+			string file = db + "/" + tName + ".txt"; //ensures we check the table within the selected database
 			if(stat(file.c_str(), &buf) == 0)
 			{
 				for(int i = 0; i < tableObject.size(); i++)
@@ -191,6 +197,8 @@ int main (int argc, char * argv[])
 				cout << "Failed to select table '" << tName << "' because it does not exist." << endl;
 			}
 		}
+
+		//if no command is found that matches the above, then will return an unrecognized command.
 		else
 		{
 			cout << "Error: Command not recognized." << endl;
