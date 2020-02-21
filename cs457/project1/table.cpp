@@ -7,6 +7,7 @@
 #include <iostream>
 #include "table.h"
 
+//parametized constructoir
 Table::Table(string name, string parameters, string db) 
 {
 	tableName = name;
@@ -14,6 +15,7 @@ Table::Table(string name, string parameters, string db)
 	database = db;
 }
 
+//destructor
 Table::~Table()
 {
 	tableName = "";
