@@ -12,6 +12,7 @@
 
 using namespace std;
 
+//class for storage of table information
 class Table {
 public:
 	Table(string name, string parameters, string db);
