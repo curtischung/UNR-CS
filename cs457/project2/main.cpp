@@ -1,0 +1,209 @@
+/*
+	Database Project Assignment, written in C++
+	CS 457, from University of Nevada, Reno
+	by Curtis Chung
+	Date: 2/6/2020
+*/
+#define _GLIBCXX_USE_CXX11_ABI 0
+
+#include <iostream>
+#include <string>
+#include <ctype.h>
+#include <bits/stdc++.h> //transform()
+#include <algorithm>
+#include <sys/stat.h> //stat
+#include <vector>
+#include "table.cpp"
+
+using namespace std;
+
+
+int main (int argc, char * argv[]) 
+{
+	string command;
+	string dbName = "";
+	string tName = "";
+	string delFile = "";
+	string delTable = "";
+
+	string db = "";
+	string para = "";
+
+	struct stat buf;
+
+	vector<Table> tableObject;
+	int systemTracker;
+	int errorFlag = 0;
+
+
+	while (command != ".EXIT") {
+		cout << "> ";
+		getline(cin, command);
+
+		//transform(command.begin(), command.end(), command.begin(), ::toupper); //converts all commands to uppercase
+		
+		//ensures commands end with a ';' or start with '.'
+		if(command.find(';') == -1 && command.find('.') != 0)
+		{
+			cout << "Command not recognized, please insert a ';' after each command." << endl;
+		}
+		else if (command == ".EXIT") //ensures exit command (probably unnneccesary)
+		{
+			break;
+		}
+
+		//creates file directory database
+		else if (command.find("CREATE DATABASE") != string::npos) 
+		{
+			dbName = command.substr (16, command.length() - 17); //sets dbName as name given by user after command input
+			if (stat(dbName.c_str(), &buf) != 0) //checks if file exists
+			{
+				systemTracker = system(("mkdir " + dbName).c_str());
+				cout << "Database '" << dbName << "' was successfully created. "<< endl;
+			} 
+			else 
+			{
+				cout << "Failed to create database '" <<
+				 dbName << "' because it already exists." << endl;
+			}
+
+		}
+
+		//deletes file directory database
+		else if (command.find("DROP DATABASE") != string::npos)
+		{
+			delFile = command.substr (14, command.length() - 15); //sets delFile to name
+			if (stat(delFile.c_str(), &buf) == 0) //checks if file exists
+			{
+				systemTracker = system(("rmdir " + delFile).c_str());
+				cout << "Database '" << delFile << "' was successfully deleted." << endl;
+			}
+			else
+			{
+				cout << "Failed to delete '" <<
+				 delFile << "' because it does not exist." << endl;
+			}
+		}
+
+		//selects which database folder to use
+		else if (command.find("USE") != -1)
+		{
+			db = command.substr(4, command.length() - 5);
+			if (stat(db.c_str(), &buf) == 0)
+			{
+				systemTracker = system(("cd " + db).c_str());
+				cout << "Using database '" << db << "'." << endl;
+			}
+			else
+			{
+				cout << "Failed to select database '" << db << "' because it does not exist." << endl;
+			}
+		}
+
+		//creates a table.txt file, which stores said .txt in the database folder
+		else if (command.find("CREATE TABLE") != string::npos)
+		{
+			tName = command.substr(13, command.find("(") - 14);
+			string file = db + "/" + tName + ".txt";
+
+			if(stat(file.c_str(), &buf) == 0)
+			{
+				cout << "Failed to create table '" << tName << "' because it already exists." << endl;	
+			}
+			else
+			{
+				if(db != "")
+				{
+					systemTracker = system(("touch " + db + "/" + tName + ".txt").c_str()); //creates .txt table
+					para = command.substr(command.find("(") + 1, command.length() - 3 - command.find("(")); //sets parameters from command inputted
+					Table* T = new Table(tName, para, db); //Creates table instance
+					tableObject.push_back(*T);
+					cout << "Table '" << tName << "' was successfully created." << endl;
+				}
+				else
+				{
+					cout << "Error: No database selected." << endl;
+				}
+			}
+		}
+
+		//Deletes table from selected database
+		else if (command.find("DROP TABLE") != string::npos)
+		{
+			delTable = command.substr(11, command.length() - 12);
+
+			string file = db + "/" + delTable + ".txt"; //ensures we check in the database folder
+			if(stat(file.c_str(), &buf) == 0)
+			{
+				systemTracker = system(("rm " + db + "/" + delTable + ".txt").c_str());
+				for(int i = 0; i < tableObject.size(); i++)
+				{
+					if(delTable == tableObject[i].getName() && db == tableObject[i].getDatabase())
+					{
+						tableObject.erase(tableObject.begin() + i); //erases table parameters within the vector class
+					}
+					cout << "Table '" << delTable <<"' successfully deleted." << endl;
+				}
+			}
+			else
+			{
+				cout << "Failed to delete table '" << delTable << "' because it does not exist." << endl;
+			}
+		}
+		
+		//Alter table contents, add parameters to the table vecor that has already been created
+		else if (command.find("ALTER TABLE") != string::npos)
+		{
+			tName = command.substr(12, command.find("ADD")-13);
+			string add = command.substr(command.find("ADD") + 3, command.length() - (command.find("ADD") + 4));
+			
+			string file = db + "/" + tName + ".txt"; //ensures we check inside selected database
+			if(stat(file.c_str(), &buf) == 0)
+			{
+				for(int i = 0; i < tableObject.size(); i++)
+				{
+					if(tName == tableObject[i].getName() && db == tableObject[i].getDatabase())
+					{
+						tableObject[i].setParameters(tableObject[i].getParameters() + "," + add); //sets new parameters to already existing parameters
+						cout << "Table '" << tName << "' has been modified." << endl;
+						break;
+					}
+				}
+			}
+			else
+			{
+				cout << "Failed to modify '" << tName << "' because it does not exist." << endl;
+			}
+		}	
+
+		//Select allows us to select the table and prints it
+		else if (command.find("SELECT *") != string::npos)
+		{
+			tName = command.substr(14, command.length() - 15);
+			string file = db + "/" + tName + ".txt"; //ensures we check the table within the selected database
+			if(stat(file.c_str(), &buf) == 0)
+			{
+				for(int i = 0; i < tableObject.size(); i++)
+				{
+					if(tName == tableObject[i].getName() && db == tableObject[i].getDatabase())
+					{
+						tableObject[i].printTable();
+						break;
+					}
+				}
+			}
+			else
+			{
+				cout << "Failed to select table '" << tName << "' because it does not exist." << endl;
+			}
+		}
+
+		//if no command is found that matches the above, then will return an unrecognized command.
+		else
+		{
+			cout << "Error: Command not recognized." << endl;
+		}
+	}
+
+	return 0;
+}
