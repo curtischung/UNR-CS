@@ -21,14 +21,23 @@ public:
 	string getName();
 	string getParameters();
 	string getDatabase();
+	int getIndex(string column);
 
 	void setParameters(string p);
 
 	void printTable();
+	void fileWrite();
+void queryTable(int whereIndex, string whereVal, vector<int> indices);
+	//void queryTable(int index, string value, vector<int> indices);
+	int update(int iWhere, string vWhere, int iSet, string vSet);
+	int del(int index, string value, char a);
+	void insertVector(vector<string> input);
+
 private:
 	string tableName;
 	string tableParameters;
 	string database;
+	vector <vector<string>> vectorData;
 
 };
 
