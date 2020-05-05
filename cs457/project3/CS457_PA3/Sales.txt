@@ -1,0 +1,4 @@
+employeeID int |  productID int
+1 | 344
+1 | 355
+2 | 544
