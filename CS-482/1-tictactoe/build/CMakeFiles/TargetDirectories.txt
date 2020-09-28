@@ -1,0 +1,3 @@
+/home/curtisc/UNR-CS/CS-482/1-tictactoe/build/CMakeFiles/rebuild_cache.dir
+/home/curtisc/UNR-CS/CS-482/1-tictactoe/build/CMakeFiles/tictactoe.dir
+/home/curtisc/UNR-CS/CS-482/1-tictactoe/build/CMakeFiles/edit_cache.dir
